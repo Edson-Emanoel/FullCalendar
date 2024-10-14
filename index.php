@@ -1,18 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css">
-      
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+      <meta charset="UTF-8"> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
       <title>Calendar</title>
 </head>
+<style>
+      .box
+      {
+            width: 100%;
+            max-width: 600px;
+            background: #F9F9F9;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            padding: 16px;
+            margin: 0 auto;
+      }
+      input.parsley-success,
+      select.parsley-success,
+      textarea.parsley-success {
+            color: #468847;
+            background-color: #DFF0B8;
+            border: 1px solid #D6E9C6;
+      }
+      
+      input.parsley-error,
+      select.parsley-error,
+      textarea.parsley-error {
+            color: #B94A48;
+            background-color: #F2DEDE;
+            border: 1px solid #EED3D7;
+      }
+
+      .parsley-errors-list {
+            margin: 2px 0 3px;
+            padding: 0;
+            list-style-type: none;
+            font-size: .9em;
+            line-height: .9em;
+            opacity: 0;
+
+            transition: all .3s ease-in;
+            -o-transition: all .3s ease-in;
+            -moz-transition: all .3s ease-in;
+            -webkit-transition: all .3s ease-in;
+      }
+
+      .parsley-errors-list.filled {
+            opacity: 1;
+      }
+
+      .parsley-type, .parsley-required, .parsley-equalto {
+            color: #FF0000;
+      }
+      .error
+      {
+            color: red;
+            font-weight: 700;
+      }
+</style>
+<?php
+      include('connection.php');
+
+      if(isset($_REQUEST['save-event'])){
+            $title = $_REQUEST['title'];
+            $start_date = $_REQUEST['start_date'];
+            $end_date = $_REQUEST['end_date'];
+
+            $insert_query = mysqli_query($connection,
+            " INSERT INTO tbl_event (title, start_date, end_date) VALUES ('$title', '$start_date', '$end_date') ");
+
+            if($insert_query)
+            {
+                  header('location:view-calendar.php');
+            }
+            else
+            {
+                  $msg = "Event could'nt be created ('-')";
+            }
+      }
+?>
 <body>
       <div class="container">
             <div class="table-responsive">
@@ -27,13 +93,13 @@
                               </div>
                               <div class="form-group">
                                     <label for="date">Em que dia começa ?</label>
-                                    <input type="date" name="start_date" id="start_date" required
+                                    <input type="datetime-local" name="start_date" id="start_date" required
                                     data-parsley-type="date" data-parsley-trigg
                                     er="keyup" class="form-control"/>
                               </div>
                               <div class="form-group">
                                     <label for="date">Em que dia termina ?</label>
-                                    <input type="date" name="end_date" id="end_date" required
+                                    <input type="datetime-local" name="end_date" id="end_date" required
                                     data-parsley-type="date" data-parsley-trigg
                                     er="keyup" class="form-control"/>
                               </div>
@@ -46,57 +112,5 @@
                   </div>
             </div>
       </div>
-
-      <script>
-            $(document).ready(function(){
-                  $('#calendar').fullCalendar({
-                        selectable: true,
-                        selectHelper: true,
-                        select: function ()
-                        {
-                             $('#myModal').modal('toggle');
-                        },
-                        header: {
-                              left: 'month, agendaWeek, agendaDay, list',
-                              center: 'title',
-                              right: 'prev, today, next'
-                        },
-                        buttonText: {
-                              today: 'Hoje',
-                              month: 'Mês',
-                              week: 'Semana',
-                              day: 'Dia',
-                              list: 'Lista de Serviços'
-                        },
-                        events: [{
-                              title: 'Corte 01',
-                              start: '2024-10-13T09:00',
-                              end: '2024-10-13T09:30',
-                              color: 'orange',
-                              textColor: 'black'
-                        },
-                        {
-                              title: 'Corte 10',
-                              start: '2024-10-13T19:30',
-                              end: '2024-10-13T20:00',
-                              color: 'orange',
-                              textColor: 'black'
-                        },],
-                        dayRender: function(date, cell)
-                        {
-                              var newDate = $.fullCalendar.formatDate(date, 'DD-MM-YYYY');
-                              if(newDate == '24-10-2024')
-                              {
-                                    cell.css("background", "#61bd50") // Disponível
-                              }
-                              else if(newDate == '28-10-2024')
-                              {
-                                    cell.css('background', '#d83a31') // Indisponível
-                              }
-                        }
-                  });
-
-            })
-      </script>
 </body>
 </html>
