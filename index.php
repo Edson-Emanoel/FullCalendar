@@ -5,15 +5,21 @@
       <title>Calendar</title>
 </head>
 <style>
+      h3 {
+            color: #2A282C;
+            font-size: 20px;
+            text-align: center;
+      }
       .box
       {
             width: 100%;
             max-width: 600px;
+
             background: #F9F9F9;
             border: 1px solid #CCC;
             border-radius: 5px;
+            
             padding: 16px;
-            margin: 0 auto;
       }
       input.parsley-success,
       select.parsley-success,
@@ -57,10 +63,14 @@
             color: red;
             font-weight: 700;
       }
+
+      .btn:focus {
+            border: none;
+            outline: none;
+      }
 </style>
 <?php
       include('connection.php');
-
       if(isset($_REQUEST['save-event'])){
             $title = $_REQUEST['title'];
             $start_date = $_REQUEST['start_date'];
@@ -82,9 +92,9 @@
 <body>
       <div class="container">
             <div class="table-responsive">
-                  <h3 align="center">Create Event</h3> <br>
                   <div class="box">
                         <form method="post">
+                              <h3 align="center">Create Event</h3> <br>
                               <div class="form-group">
                                     <label for="title">Título do Evento</label>
                                     <input type="text" name="title" id="title" placeholder="Título do Evento" required

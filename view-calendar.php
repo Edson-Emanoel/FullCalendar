@@ -19,6 +19,15 @@
             <div id="calendar"></div>
       </div>
       <br>
+
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+                  <!-- Modal Content -->
+                  <?php include("./index.php") ?>
+
+        </div>
+    </div>
 </body>
 </html>
       <?php
@@ -35,7 +44,7 @@
                         $('#myModal').modal('toggle');
                   },
                   header: {
-                        left: 'month, agendaWeek, agendaDay, list',
+                        left: 'month, agendaWeek, list',
                         center: 'title',
                         right: 'prev, today, next'
                   },
@@ -49,23 +58,22 @@
                   events: [
                         <?php
                               while($result = mysqli_fetch_array($fetch_event))
-                              {
-                        ?>
+                              { ?>
                         {
-                              id: '<?php echo $result['id'] ?>',
-                              title: '<?php echo $result['title'] ?>',
-                              start: '<?php echo $result['start_date'] ?>',
-                              end: '<?php echo $result['end_date'] ?>',
+                              id: '<?php echo $result['id']; ?>',
+                              title: '<?php echo $result['title']; ?>',
+                              start: '<?php echo $result['start_date']; ?>',
+                              end: '<?php echo $result['end_date']; ?>',
                               color: 'orange',
                               textColor: 'black'
-                        }
+                        },
                         <?php } ?>
                   ],
                   editable: true,
                   eventDrop: function(event)
                   {
-                        var start = $.fullCalendar.formatDate(event.start, "DD-MM-YYYY HH:mm");
-                        var end = $.fullCalendar.formatDate(event.end, "DD-MM-YYYY HH:mm");
+                        var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
+                        var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
                         var title = event.title;
                         var id = event.id;
                         $.ajax({
@@ -77,7 +85,21 @@
                                     alert("Evento remarcado com sucesso!");
                               }
                         });
-                  }
+                  },
+                  eventClick: function (event)
+                  {
+                        var id = event.id;
+                        $.ajax({
+                              url: "delete.php",
+                              type: "POST",
+                              data: { id: id },
+                              success: function()
+                              {
+                                    alert("Evento cancelado com sucesso!");
+                                    window.location.reload();
+                              }
+                        }); 
+                  },
             });
 
       })
